@@ -1,13 +1,22 @@
 use scraper::{ Html, Selector };
+use ratatui::{
+    text::Text,
+    text::Line,
+    widgets::{
+        ListItem,
+    },
+    prelude::Stylize,
+    style::Style,
+};
 
 #[derive(Debug)]
-struct SearchResult {
-    title: String,
-    url: String,
-    desc: Option<String>,
+pub struct SearchResult {
+    pub title: String,
+    pub url: String,
+    pub desc: Option<String>,
 }
 
-pub fn parse(htm: String) {
+pub fn parse(htm: String) -> Vec<SearchResult> {
     let document = Html::parse_document(&htm);
 
     let mut output: Vec<SearchResult> = Vec::new();
@@ -48,7 +57,21 @@ pub fn parse(htm: String) {
         }
 
     }
-    for item in output {
-        println!("{}  [{}]\n{}\n\n", item.title, item.url, item.desc.unwrap());
+    // for item in output {
+    //     println!("{}  [{}]\n{}\n\n", item.title, item.url, item.desc.unwrap());
+    // }
+
+    output
+}
+
+impl From<&SearchResult> for ListItem<'_> {
+    fn from(value: &SearchResult) -> Self {
+        let line = Text::from(vec![
+            Line::styled(value.title.clone(), Style::new().yellow()),
+            Line::from(value.url.clone()).yellow(),
+            Line::from(value.desc.clone().unwrap()),
+        ]);
+
+        ListItem::new(line)
     }
 }
