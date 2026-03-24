@@ -8,6 +8,7 @@ on:
 
 jobs:
   mirror:
+    if: github.repository == 'shrujan0/termsearch'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout (full history)
